@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Online Chat</string>
+    <string name="enter_nickname_hint">Никнейм</string>
+    <string name="enter">Войти</string>
 </resources>
