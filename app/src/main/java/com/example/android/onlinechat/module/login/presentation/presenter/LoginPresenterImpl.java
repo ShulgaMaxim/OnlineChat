@@ -1,5 +1,6 @@
 package com.example.android.onlinechat.module.login.presentation.presenter;
 
+import com.example.android.onlinechat.module.login.di.LoginScope;
 import com.example.android.onlinechat.module.login.domain.interactor.LoginInteractor;
 import com.example.android.onlinechat.module.login.presentation.navigator.LoginNavigator;
 import com.example.android.onlinechat.module.login.presentation.view.LoginView;
@@ -11,7 +12,7 @@ import java8.util.Optional;
  * @author mshulga
  * @since 18.01.18
  */
-
+@LoginScope
 public class LoginPresenterImpl implements LoginPresenter {
 
     private final LoginInteractor mLoginInteractor;

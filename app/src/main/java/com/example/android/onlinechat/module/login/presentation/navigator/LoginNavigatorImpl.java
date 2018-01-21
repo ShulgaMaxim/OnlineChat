@@ -1,6 +1,7 @@
 package com.example.android.onlinechat.module.login.presentation.navigator;
 
 import com.example.android.onlinechat.module.chat.ui.view.ChatActivity;
+import com.example.android.onlinechat.module.login.di.LoginScope;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.content.Intent;
  * @since 18.01.18
  */
 
+@LoginScope
 public class LoginNavigatorImpl implements LoginNavigator {
 
     private final Context mContext;

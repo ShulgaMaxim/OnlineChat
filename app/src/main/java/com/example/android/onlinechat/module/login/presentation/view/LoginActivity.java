@@ -3,22 +3,18 @@ package com.example.android.onlinechat.module.login.presentation.view;
 import com.example.android.onlinechat.BaseActivity;
 import com.example.android.onlinechat.ContentView;
 import com.example.android.onlinechat.R;
-import com.example.android.onlinechat.module.login.data.dataSource.FirebaseAnonymousAuthDataSourse;
-import com.example.android.onlinechat.module.login.data.dataSource.FirebaseAuthDataSource;
-import com.example.android.onlinechat.module.login.data.model.FirebaseUserToUserDtoMapper;
-import com.example.android.onlinechat.module.login.data.repository.LoginRepository;
-import com.example.android.onlinechat.module.login.data.repository.LoginRepositoryImpl;
-import com.example.android.onlinechat.module.login.domain.interactor.LoginInteractor;
-import com.example.android.onlinechat.module.login.domain.interactor.LoginInteractorImpl;
-import com.example.android.onlinechat.module.login.presentation.navigator.LoginNavigatorImpl;
+import com.example.android.onlinechat.di.Injector;
+import com.example.android.onlinechat.module.login.di.LoginComponent;
+import com.example.android.onlinechat.module.login.di.LoginModule;
 import com.example.android.onlinechat.module.login.presentation.presenter.LoginPresenter;
-import com.example.android.onlinechat.module.login.presentation.presenter.LoginPresenterImpl;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -31,6 +27,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
     @BindView(R.id.edit_nickname)
     EditText mNicknameEditText;
 
+    @Inject
     LoginPresenter mLoginPresenter;
 
     @OnClick(R.id.enter_button)
@@ -51,7 +48,10 @@ public class LoginActivity extends BaseActivity implements LoginView {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initPresenter();
+        LoginModule loginModule = new LoginModule(this);
+        LoginComponent loginComponent = Injector.getInstance().getAppComponent().plus(loginModule);
+        loginComponent.inject(this);
+//        initPresenter();
     }
 
     @Override
@@ -60,12 +60,12 @@ public class LoginActivity extends BaseActivity implements LoginView {
         mLoginPresenter.onDestroyView();
     }
 
-    private void initPresenter() {
-        LoginNavigatorImpl loginNavigator = new LoginNavigatorImpl(this);
-        FirebaseUserToUserDtoMapper firebaseUserToUserDtoMapper = new FirebaseUserToUserDtoMapper();
-        FirebaseAuthDataSource authDataSourse = new FirebaseAnonymousAuthDataSourse(firebaseUserToUserDtoMapper);
-        LoginRepository loginRepository = new LoginRepositoryImpl(authDataSourse);
-        LoginInteractor loginInteractor = new LoginInteractorImpl(loginRepository);
-        mLoginPresenter = new LoginPresenterImpl(loginNavigator, this, loginInteractor);
-    }
+//    private void initPresenter() {
+//        LoginNavigatorImpl loginNavigator = new LoginNavigatorImpl(this);
+//        FirebaseUserToUserDtoMapper firebaseUserToUserDtoMapper = new FirebaseUserToUserDtoMapper();
+//        FirebaseAuthDataSource authDataSourse = new FirebaseAnonymousAuthDataSourse(firebaseUserToUserDtoMapper);
+//        LoginRepository loginRepository = new LoginRepositoryImpl(authDataSourse);
+//        LoginInteractor loginInteractor = new LoginInteractorImpl(loginRepository);
+//        mLoginPresenter = new LoginPresenterImpl(loginNavigator, this, loginInteractor);
+//    }
 }
