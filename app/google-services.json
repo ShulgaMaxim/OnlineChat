@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1012160693637",
+    "firebase_url": "https://onlinechat-b2a74.firebaseio.com",
+    "project_id": "onlinechat-b2a74",
+    "storage_bucket": "onlinechat-b2a74.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1012160693637:android:7e44982b478d4617",
+        "android_client_info": {
+          "package_name": "com.example.android.onlinechat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1012160693637-4spq2ff8jharjrj632cddoucc8vv12f8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.android.onlinechat",
+            "certificate_hash": "336bf78f0e4157eda843af8630ece8e9d529e191"
+          }
+        },
+        {
+          "client_id": "1012160693637-t6tumrgaro6cov98n1pi1sbp3at8kfbu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZ-rA3Ngsd79syt9Q5YdKdwc79dCv1hC0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1012160693637-t6tumrgaro6cov98n1pi1sbp3at8kfbu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

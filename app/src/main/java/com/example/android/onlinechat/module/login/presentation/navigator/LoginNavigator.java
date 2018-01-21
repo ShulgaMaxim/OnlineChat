@@ -1,4 +1,4 @@
-package com.example.android.onlinechat.module.login.ui.navigator;
+package com.example.android.onlinechat.module.login.presentation.navigator;
 
 /**
  * @author mshulga

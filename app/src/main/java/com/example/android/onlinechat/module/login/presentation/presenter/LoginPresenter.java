@@ -1,4 +1,4 @@
-package com.example.android.onlinechat.module.login.ui.presenter;
+package com.example.android.onlinechat.module.login.presentation.presenter;
 
 /**
  * @author mshulga

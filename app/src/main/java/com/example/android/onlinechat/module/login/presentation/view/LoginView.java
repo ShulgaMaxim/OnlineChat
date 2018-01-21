@@ -1,4 +1,4 @@
-package com.example.android.onlinechat.module.login.ui.view;
+package com.example.android.onlinechat.module.login.presentation.view;
 
 /**
  * @author mshulga
@@ -6,5 +6,8 @@ package com.example.android.onlinechat.module.login.ui.view;
  */
 
 public interface LoginView {
+
     void showEmptyNicknameError();
+
+    void showToastMessage(String msg);
 }
