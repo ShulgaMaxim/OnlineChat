@@ -17,7 +17,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".module.chat.ui.view.ChatActivity"
+            android:name=".module.chat.presentation.view.ChatActivity"
             android:label="Chat Activity" />
 
     </application>

@@ -35,7 +35,7 @@ public class LoginPresenterImpl implements LoginPresenter {
             mLoginInteractor.login(nickname)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(userEntity -> {
-                    mLoginNavigator.goToChatScreen();
+                    mLoginNavigator.goToChatScreen(nickname);
                 }, throwable -> {
                     loginView.showToastMessage(throwable.getLocalizedMessage());
                 });

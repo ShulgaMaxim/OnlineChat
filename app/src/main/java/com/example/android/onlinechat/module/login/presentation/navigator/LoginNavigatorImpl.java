@@ -1,6 +1,6 @@
 package com.example.android.onlinechat.module.login.presentation.navigator;
 
-import com.example.android.onlinechat.module.chat.ui.view.ChatActivity;
+import com.example.android.onlinechat.module.chat.presentation.view.ChatActivity;
 import com.example.android.onlinechat.module.login.di.LoginScope;
 
 import android.content.Context;
@@ -21,8 +21,9 @@ public class LoginNavigatorImpl implements LoginNavigator {
     }
 
     @Override
-    public void goToChatScreen() {
+    public void goToChatScreen(String nickname) {
         Intent intent = new Intent(mContext, ChatActivity.class);
+        intent.putExtra("nick", nickname);
         mContext.startActivity(intent);
     }
 }

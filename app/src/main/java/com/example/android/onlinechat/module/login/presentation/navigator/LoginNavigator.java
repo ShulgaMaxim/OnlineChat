@@ -8,5 +8,5 @@ import com.example.android.onlinechat.module.login.di.LoginScope;
  */
 @LoginScope
 public interface LoginNavigator {
-    void goToChatScreen();
+    void goToChatScreen(String nickname);
 }

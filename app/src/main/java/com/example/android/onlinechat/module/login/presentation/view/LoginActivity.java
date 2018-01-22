@@ -22,6 +22,7 @@ import butterknife.OnClick;
 @ContentView(R.layout.activity_login)
 public class LoginActivity extends BaseActivity implements LoginView {
 
+    private static final int SIGN_IN_REQUEST_CODE = 1;
     @BindView(R.id.enter_button)
     Button mEnterButton;
     @BindView(R.id.edit_nickname)
@@ -51,7 +52,6 @@ public class LoginActivity extends BaseActivity implements LoginView {
         LoginModule loginModule = new LoginModule(this);
         LoginComponent loginComponent = Injector.getInstance().getAppComponent().plus(loginModule);
         loginComponent.inject(this);
-//        initPresenter();
     }
 
     @Override
@@ -59,13 +59,4 @@ public class LoginActivity extends BaseActivity implements LoginView {
         super.onDestroy();
         mLoginPresenter.onDestroyView();
     }
-
-//    private void initPresenter() {
-//        LoginNavigatorImpl loginNavigator = new LoginNavigatorImpl(this);
-//        FirebaseUserToUserDtoMapper firebaseUserToUserDtoMapper = new FirebaseUserToUserDtoMapper();
-//        FirebaseAuthDataSource authDataSourse = new FirebaseAnonymousAuthDataSourse(firebaseUserToUserDtoMapper);
-//        LoginRepository loginRepository = new LoginRepositoryImpl(authDataSourse);
-//        LoginInteractor loginInteractor = new LoginInteractorImpl(loginRepository);
-//        mLoginPresenter = new LoginPresenterImpl(loginNavigator, this, loginInteractor);
-//    }
 }
