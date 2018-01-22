@@ -17,8 +17,8 @@ import java8.util.Optional;
 public class ChatPresenterImpl implements ChatPresenter {
 
     private final ChatInteractor mChatInteractor;
-    private final ChatNavigator mChatNavigator;
     private final LogoutUseCase mLogoutUseCase;
+    private ChatNavigator mChatNavigator;
     private Optional<ChatView> mChatViewOptional;
 
     public ChatPresenterImpl(ChatInteractor chatInteractor, ChatView chatView, ChatNavigator chatNavigator, LogoutUseCase logoutUseCase) {
@@ -30,6 +30,9 @@ public class ChatPresenterImpl implements ChatPresenter {
 
     @Override
     public void onSendMessageButtonClick(String nickname, String message) {
+        if (message.isEmpty()) {
+            return;
+        }
         mChatInteractor.pushNewMessage(nickname, message);
         mChatViewOptional.ifPresent(ChatView::clearMessageEditText);
     }
@@ -37,6 +40,7 @@ public class ChatPresenterImpl implements ChatPresenter {
     @Override
     public void onViewDestroyed() {
         mChatViewOptional = Optional.empty();
+        mChatNavigator = null;
     }
 
     @Override
