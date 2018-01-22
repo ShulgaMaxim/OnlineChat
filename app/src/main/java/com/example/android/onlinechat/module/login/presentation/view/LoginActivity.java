@@ -49,14 +49,19 @@ public class LoginActivity extends BaseActivity implements LoginView {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LoginModule loginModule = new LoginModule(this);
-        LoginComponent loginComponent = Injector.getInstance().getAppComponent().plus(loginModule);
-        loginComponent.inject(this);
+        injectBeans();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         mLoginPresenter.onDestroyView();
+        mLoginPresenter = null;
+    }
+
+    private void injectBeans() {
+        LoginModule loginModule = new LoginModule(this);
+        LoginComponent loginComponent = Injector.getInstance().getAppComponent().plus(loginModule);
+        loginComponent.inject(this);
     }
 }

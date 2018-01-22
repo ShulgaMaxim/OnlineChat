@@ -1,74 +1,64 @@
 package com.example.android.onlinechat.module.chat.presentation.view;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import com.example.android.onlinechat.BaseActivity;
 import com.example.android.onlinechat.ContentView;
 import com.example.android.onlinechat.R;
+import com.example.android.onlinechat.di.Injector;
+import com.example.android.onlinechat.module.chat.di.ChatComponent;
+import com.example.android.onlinechat.module.chat.di.ChatModule;
 import com.example.android.onlinechat.module.chat.domain.model.MessageEntity;
-import com.example.android.onlinechat.module.login.presentation.view.LoginActivity;
+import com.example.android.onlinechat.module.chat.presentation.presenter.ChatPresenter;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.database.SnapshotParser;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+
+import static com.example.android.onlinechat.Constants.ANONYMOUS;
+import static com.example.android.onlinechat.Constants.MESSAGES_DB_SCHEME;
+import static com.example.android.onlinechat.Constants.NICKNAME_EXTRAS_KEY;
 
 /**
  * @author mshulga
  * @since 18.01.18
  */
 @ContentView(R.layout.activity_chat)
-public class ChatActivity extends BaseActivity {
+public class ChatActivity extends BaseActivity implements ChatView {
 
-    public static class MessageViewHolder extends RecyclerView.ViewHolder {
-        TextView messageUser;
-        TextView messageText;
-
-        public MessageViewHolder(View v) {
-            super(v);
-            messageUser = itemView.findViewById(R.id.message_user);
-            messageText = itemView.findViewById(R.id.message_text);
-        }
-    }
-
-    public static final String ANONYMOUS = "anonymous";
-    public static final String MESSAGES_CHILD = "messages";
     @BindView(R.id.send_button)
     Button mSendMessageButton;
     @BindView(R.id.message_edit_text)
     EditText mMessageEditText;
     @BindView(R.id.message_list)
     RecyclerView mMessageList;
+
+    @Inject
+    ChatPresenter mChatPresenter;
+
     private String mCurrentUserNickname = ANONYMOUS;
     private FirebaseRecyclerAdapter adapter;
+
 
     @OnClick(R.id.send_button)
     public void sendMessageButtonClick() {
         String messageBody = mMessageEditText.getText().toString();
-        FirebaseDatabase.getInstance()
-            .getReference()
-            .child(MESSAGES_CHILD)
-            .push()
-            .setValue(new MessageEntity(mCurrentUserNickname, messageBody));
-        mMessageEditText.setText("");
+        mChatPresenter.onSendMessageButtonClick(mCurrentUserNickname, messageBody);
     }
 
     @Override
@@ -82,14 +72,21 @@ public class ChatActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.sign_out_menu:
-                FirebaseAuth.getInstance().signOut();
-                mCurrentUserNickname = ANONYMOUS;
-                startActivity(new Intent(this, LoginActivity.class));
-                finish();
+                mChatPresenter.onSignOutClick();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void clearMessageEditText() {
+        mMessageEditText.setText("");
+    }
+
+    @Override
+    public void destroySelf() {
+        finish();
     }
 
     @Override
@@ -105,12 +102,38 @@ public class ChatActivity extends BaseActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mChatPresenter.onViewDestroyed();
+        mChatPresenter = null;
+    }
+
+    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            mCurrentUserNickname = extras.getString("nick");
+            mCurrentUserNickname = extras.getString(NICKNAME_EXTRAS_KEY);
         }
+        initMessagesList();
+        injectBeans();
+    }
+
+    private void injectBeans() {
+        ChatModule chatModule = new ChatModule(this);
+        ChatComponent chatComponent = Injector.getInstance().getAppComponent().plus(chatModule);
+        chatComponent.inject(this);
+    }
+
+    private void initMessagesList() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setStackFromEnd(true);
+        initMessagesAdapter(layoutManager);
+        mMessageList.setLayoutManager(layoutManager);
+        mMessageList.setAdapter(adapter);
+    }
+
+    private void initMessagesAdapter(LinearLayoutManager layoutManager) {
 
         SnapshotParser<MessageEntity> parser = dataSnapshot -> {
             MessageEntity friendlyMessage = dataSnapshot.getValue(MessageEntity.class);
@@ -120,29 +143,14 @@ public class ChatActivity extends BaseActivity {
             return friendlyMessage;
         };
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setStackFromEnd(true);
-
-        DatabaseReference messagesRef = FirebaseDatabase.getInstance().getReference().child(MESSAGES_CHILD);
+        DatabaseReference messagesRef = FirebaseDatabase.getInstance().getReference().child(MESSAGES_DB_SCHEME);
 
         FirebaseRecyclerOptions<MessageEntity> options =
             new FirebaseRecyclerOptions.Builder<MessageEntity>()
                 .setQuery(messagesRef, parser)
                 .build();
 
-        adapter = new FirebaseRecyclerAdapter<MessageEntity, MessageViewHolder>(options) {
-            @Override
-            public MessageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.message_item, parent, false);
-                return new MessageViewHolder(view);
-            }
-
-            @Override
-            protected void onBindViewHolder(MessageViewHolder holder, int position, MessageEntity model) {
-                holder.messageText.setText(model.getText());
-                holder.messageUser.setText(model.getUserNickname());
-            }
-        };
+        adapter = new MessagesAdapter(options);
 
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
@@ -156,9 +164,5 @@ public class ChatActivity extends BaseActivity {
                 }
             }
         });
-
-        mMessageList.setLayoutManager(layoutManager);
-        mMessageList.setAdapter(adapter);
-
     }
 }

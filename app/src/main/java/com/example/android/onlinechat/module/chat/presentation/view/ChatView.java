@@ -6,4 +6,7 @@ package com.example.android.onlinechat.module.chat.presentation.view;
  */
 
 public interface ChatView {
+    void clearMessageEditText();
+
+    void destroySelf();
 }

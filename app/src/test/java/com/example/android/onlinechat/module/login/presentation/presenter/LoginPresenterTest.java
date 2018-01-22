@@ -47,7 +47,7 @@ public class LoginPresenterTest {
 
         mLoginPresenter.onEnterButtonClick(nickName);
 
-        verify(mLoginNavigator).goToChatScreen();
+        verify(mLoginNavigator).goToChatScreen(nickName);
         verify(mLoginView, never()).showEmptyNicknameError();
     }
 
@@ -59,7 +59,7 @@ public class LoginPresenterTest {
 
         mLoginPresenter.onEnterButtonClick(nickName);
 
-        verify(mLoginNavigator, never()).goToChatScreen();
+        verify(mLoginNavigator, never()).goToChatScreen(nickName);
         verify(mLoginView, never()).showEmptyNicknameError();
         verify(mLoginView).showToastMessage(errorMsg);
     }
@@ -69,7 +69,7 @@ public class LoginPresenterTest {
         String nickName = "";
         mLoginPresenter.onEnterButtonClick(nickName);
 
-        verify(mLoginNavigator, never()).goToChatScreen();
+        verify(mLoginNavigator, never()).goToChatScreen(nickName);
         verify(mLoginView).showEmptyNicknameError();
     }
 }

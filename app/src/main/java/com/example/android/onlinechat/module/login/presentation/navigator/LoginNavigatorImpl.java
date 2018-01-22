@@ -6,6 +6,8 @@ import com.example.android.onlinechat.module.login.di.LoginScope;
 import android.content.Context;
 import android.content.Intent;
 
+import static com.example.android.onlinechat.Constants.NICKNAME_EXTRAS_KEY;
+
 /**
  * @author mshulga
  * @since 18.01.18
@@ -23,7 +25,7 @@ public class LoginNavigatorImpl implements LoginNavigator {
     @Override
     public void goToChatScreen(String nickname) {
         Intent intent = new Intent(mContext, ChatActivity.class);
-        intent.putExtra("nick", nickname);
+        intent.putExtra(NICKNAME_EXTRAS_KEY, nickname);
         mContext.startActivity(intent);
     }
 }
